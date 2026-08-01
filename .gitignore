@@ -1,0 +1,33 @@
+# Secrets & local env
+.env
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+
+# Hugging Face / local model caches
+models/
+
+# Local data / index (rebuild with scripts/build_index.py)
+data/chroma/**
+!data/chroma/.gitkeep
+data/artifacts/**
+!data/artifacts/.gitkeep
+data/pdfs/*.pdf
+!data/pdfs/.gitkeep
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Scratch eval runs
+reports/runs/

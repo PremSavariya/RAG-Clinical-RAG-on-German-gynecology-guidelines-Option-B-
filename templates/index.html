@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nixi RAG — Leitlinienfrage</title>
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --ink: #1a1a1a;
+      --muted: #5c5c5c;
+      --accent: #1f4d3a;
+      --card: #fffdf8;
+      --border: #d9d2c5;
+      --refuse: #7a2e2e;
+      --ok: #1f4d3a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: linear-gradient(160deg, #ebe6db 0%, var(--bg) 45%, #e2ebe6 100%);
+      color: var(--ink);
+      min-height: 100vh;
+      line-height: 1.45;
+    }
+    main {
+      max-width: 44rem;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 3rem;
+    }
+    h1 {
+      font-size: 1.55rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.25rem;
+      color: var(--accent);
+    }
+    .sub {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+    form {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.1rem 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    label { font-size: 0.85rem; font-weight: 600; }
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.65rem;
+    }
+    @media (max-width: 640px) {
+      .controls { grid-template-columns: 1fr; }
+    }
+    .controls label { display: block; margin-bottom: 0.25rem; }
+    select, input[type="number"] {
+      width: 100%;
+      padding: 0.45rem 0.55rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font: inherit;
+      background: #fff;
+    }
+    textarea {
+      width: 100%;
+      min-height: 5.5rem;
+      resize: vertical;
+      padding: 0.65rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font: inherit;
+      background: #fff;
+    }
+    button {
+      align-self: flex-start;
+      background: var(--accent);
+      color: #fff;
+      border: 0;
+      border-radius: 8px;
+      padding: 0.55rem 1.1rem;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button:hover { filter: brightness(1.08); }
+    .error {
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      background: #f8e8e8;
+      border: 1px solid #e0b4b4;
+      border-radius: 8px;
+      color: var(--refuse);
+    }
+    .result {
+      margin-top: 1.25rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.1rem;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      margin-bottom: 0.65rem;
+    }
+    .badge.ok { background: #dceee4; color: var(--ok); }
+    .badge.refuse { background: #f0dede; color: var(--refuse); }
+    .answer {
+      white-space: pre-wrap;
+      margin: 0 0 1rem;
+    }
+    h2 {
+      font-size: 0.95rem;
+      margin: 0 0 0.6rem;
+      color: var(--muted);
+      font-weight: 650;
+    }
+    .hit {
+      border-top: 1px solid var(--border);
+      padding: 0.7rem 0;
+      font-size: 0.88rem;
+    }
+    .hit:first-of-type { border-top: 0; }
+    .meta {
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-bottom: 0.25rem;
+    }
+    .snippet { color: var(--ink); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Nixi RAG</h1>
+    <p class="sub">
+      Deutsche gynäkologische Leitlinien · LLM {{ llm_model }} · Embeddings {{ embed_model }}
+    </p>
+
+    <form method="post" action="/ask">
+      <label for="question">Frage</label>
+      <textarea id="question" name="question" required placeholder="z. B. Ab welchem Alter beginnt das organisierte Zervixkarzinom-Screening?">{{ question or "" }}</textarea>
+
+      <div class="controls">
+        <div>
+          <label for="llm_model">LLM</label>
+          <select id="llm_model" name="llm_model">
+            {% for m in llm_choices %}
+            <option value="{{ m }}" {% if m == llm_model %}selected{% endif %}>{{ m }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <label for="top_k">top_k (1–20)</label>
+          <input id="top_k" name="top_k" type="number" min="1" max="20" step="1" value="{{ top_k }}" />
+        </div>
+        <div>
+          <label for="temperature">Temperature (0–1)</label>
+          <input id="temperature" name="temperature" type="number" min="0" max="1" step="0.1" value="{{ temperature }}" />
+        </div>
+      </div>
+
+      <button type="submit">Fragen</button>
+    </form>
+
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+
+    {% if answer is not none %}
+    <section class="result">
+      {% if refused %}
+      <span class="badge refuse">Verweigert</span>
+      {% else %}
+      <span class="badge ok">Antwort</span>
+      {% endif %}
+      <p class="answer">{{ answer }}</p>
+
+      {% if not refused %}
+      <h2>Abgerufene Passagen ({{ hits|length }})</h2>
+      {% if hits %}
+        {% for h in hits %}
+        <div class="hit">
+          <div class="meta">
+            Seite={{ h.page }} · {{ h.source }} · {{ h.type }}
+          </div>
+          <div class="snippet">{{ h.snippet }}</div>
+        </div>
+        {% endfor %}
+      {% else %}
+      <p class="sub">Keine Treffer.</p>
+      {% endif %}
+      {% endif %}
+    </section>
+    {% endif %}
+  </main>
+</body>
+</html>

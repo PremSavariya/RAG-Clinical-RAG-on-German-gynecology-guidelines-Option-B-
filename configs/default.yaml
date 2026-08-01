@@ -1,0 +1,23 @@
+retrieval:
+  top_k: 10
+  candidate_k: 40
+  hybrid: true
+  rerank: true
+  rerank_model: BAAI/bge-reranker-v2-m3
+
+chunking:
+  max_chars: 800
+  overlap: 200
+
+extract:
+  strategy: hi_res   # fast | hi_res | auto
+  languages: ["deu"]
+
+generation:
+  temperature: 0.0
+  max_tokens: 250
+
+paths:
+  pdf_dir: data/pdfs
+  artifacts_dir: data/artifacts
+  chroma_dir: data/chroma

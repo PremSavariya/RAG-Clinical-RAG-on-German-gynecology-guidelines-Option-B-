@@ -1,0 +1,26 @@
+{
+  "n": 3,
+  "metric": "refusal",
+  "definition": "Fraction of trap questions that return the refusal phrase.",
+  "refusal_correctness": 1.0,
+  "rows": [
+    {
+      "id": 10,
+      "question": "Welche Thrombolyse-Therapie und welches Zeitfenster gelten beim akuten ischämischen Schlaganfall?",
+      "refused": true,
+      "answer": "Ich konnte in den bereitgestellten Textpassagen keine Antwort auf diese Frage finden."
+    },
+    {
+      "id": 11,
+      "question": "Welches Antibiotikum ist first-line bei einer ambulant erworbenen Pneumonie?",
+      "refused": true,
+      "answer": "Ich konnte in den bereitgestellten Textpassagen keine Antwort auf diese Frage finden."
+    },
+    {
+      "id": 12,
+      "question": "Welche medikamentöse Erstlinientherapie wird bei arterieller Hypertonie empfohlen?",
+      "refused": true,
+      "answer": "Ich konnte in den bereitgestellten Textpassagen keine Antwort auf diese Frage finden."
+    }
+  ]
+}
