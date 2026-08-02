@@ -1,4 +1,4 @@
-"""Run refusal eval on trap questions (Q10–12)."""
+"""CLI for refusal eval: trap questions (Q10–12) must refuse, not invent answers."""
 from __future__ import annotations
 
 import json
@@ -13,6 +13,7 @@ from src.eval.run_eval_refusal import run_eval_refusal
 
 
 def main() -> None:
+    # Full RAG path (retrieve + generate); only traps are scored.
     out = ROOT / "reports" / "eval_refusal.json"
     report = run_eval_refusal(out_path=out)
     print(json.dumps(

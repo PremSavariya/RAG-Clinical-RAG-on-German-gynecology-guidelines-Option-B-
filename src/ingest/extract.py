@@ -1,3 +1,8 @@
+"""Step 1 of ingest: PDF → structured text/table records (elements.jsonl).
+
+Uses Unstructured to partition the PDF. Images are skipped; tables are
+saved as HTML plus plain text so they can be embedded and searched later.
+"""
 from __future__ import annotations
 
 import json
@@ -38,6 +43,7 @@ def extract_pdf(pdf_path: Path, *, strategy: str | None = None) -> Path:
         path = None
 
         if etype == "Table":
+            # Keep HTML for inspection; plain text goes into the vector index.
             html = meta.get("text_as_html") or text
             path = str(tbl_dir / f"p{page or 0}_{tbl_i}.html")
             Path(path).write_text(html, encoding="utf-8")

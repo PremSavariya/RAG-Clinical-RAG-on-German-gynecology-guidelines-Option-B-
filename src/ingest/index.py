@@ -1,3 +1,8 @@
+"""Step 3 of ingest: chunks → Ollama embeddings → Chroma collection.
+
+This is what retrieve.py queries later. Cosine space matches how we convert
+Chroma distances to similarity scores (1 - distance).
+"""
 from __future__ import annotations
 
 import json
@@ -32,6 +37,7 @@ def get_collection(reset: bool = False):
 
 
 def index_elements(jsonl: Path, *, reset: bool = False, batch_size: int = 32) -> int:
+    """Chunk elements.jsonl, embed as passages, upsert into Chroma."""
     records = load_elements(jsonl)
     chunks = chunk_elements(records)
     col = get_collection(reset=reset)

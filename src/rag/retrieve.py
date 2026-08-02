@@ -1,3 +1,12 @@
+"""Guideline retrieval: hybrid search (dense + BM25), optional rerank.
+
+Flow (see configs/default.yaml):
+  1) Optionally expand the query with domain phrases.
+  2) Dense search in Chroma (embeddings) and BM25 keyword search.
+  3) If hybrid: fuse both lists with RRF, then a small Prävention boost.
+  4) candidate_k = how wide to search; top_k = how many chunks to return.
+  5) If rerank: cross-encoder reorders the pool and returns top_k.
+"""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -10,10 +19,10 @@ from src.ollama_client import embed_texts
 
 COLLECTION = "guidelines"
 
-# Lazy-loaded cross-encoder (optional; see retrieval.rerank in config).
+# Loaded once on first rerank call (see retrieval.rerank in config).
 _cross_encoder = None
 
-# Out-of-scope traps — do not expand (keeps refusal path clean).
+# Trap topics (stroke, pneumonia, …): skip expansion so refusal stays clean.
 _TRAP_MARKERS = (
     "schlaganfall",
     "thrombolyse",
@@ -91,16 +100,18 @@ _PRAEVENTION_HINTS = ("015-027", "praevention", "prävention")
 
 
 def expand_query(query: str) -> str:
-    """Append light clarifying phrases for known guideline intents. No extra deps."""
+    """Add short domain phrases so search finds the right guideline chunks."""
     q = (query or "").strip()
     if not q:
         return q
     lower = q.lower()
+    # Traps: do not expand (avoids pulling random medical-looking text).
     if any(m in lower for m in _TRAP_MARKERS):
         return q
     triage = any(m in lower for m in _TRIAGE_MARKERS)
     extras: list[str] = []
     for markers, phrase in _EXPANSIONS:
+        # Prefer follow-up phrasing over age-band screening when triage matches.
         if triage and any(m in _AGE_BAND_MARKERS for m in markers):
             continue
         if any(m in lower for m in markers):
@@ -118,6 +129,8 @@ def expand_query(query: str) -> str:
 
 @dataclass
 class Hit:
+    """One retrieved chunk."""
+
     id: str
     text: str
     score: float
@@ -130,12 +143,18 @@ def _collection():
 
 
 def retrieve(query: str, *, top_k: int | None = None) -> list[Hit]:
+    """Return the best guideline chunks for a question.
+
+    candidate_k = search pool size (dense + BM25 + RRF).
+    top_k = final number of chunks passed to the LLM / caller.
+    """
     top_k = top_k or CFG["retrieval"]["top_k"]
     candidate_k = CFG["retrieval"]["candidate_k"]
     col = _collection()
     original = (query or "").strip()
     expanded = expand_query(original)
 
+    # Dense / semantic search (embeddings via Ollama → Chroma).
     q_emb = embed_texts([expanded], for_query=True)[0]
     dense = col.query(
         query_embeddings=[q_emb],
@@ -145,16 +164,18 @@ def retrieve(query: str, *, top_k: int | None = None) -> list[Hit]:
     dense_hits = _from_chroma(dense)
 
     if not CFG["retrieval"].get("hybrid", True):
+        # Dense only (no BM25 / RRF).
         candidates = _lexical_boost(original, expanded, dense_hits)
     else:
-        # BM25 over all stored docs (guideline PDFs are small).
+        # Lexical / sparse BM25 on texts stored in Chroma, then fuse with RRF.
         all_docs = col.get(include=["documents", "metadatas"])
         bm25_hits = _bm25(expanded, all_docs, k=candidate_k)
         fused = _rrf(dense_hits, bm25_hits, top_k=candidate_k)
         candidates = _lexical_boost(original, expanded, fused)
 
     if CFG["retrieval"].get("rerank", False):
-        return _cross_encoder_rerank(original, candidates, top_k=top_k)
+        # Cross-encoder reorders the pool; expanded query keeps domain cues.
+        return _cross_encoder_rerank(expanded, candidates, top_k=top_k)
     return candidates[:top_k]
 
 
@@ -165,12 +186,13 @@ def _from_chroma(result: dict) -> list[Hit]:
     metas = result["metadatas"][0]
     dists = result["distances"][0]
     for i, doc, meta, dist in zip(ids, docs, metas, dists):
-        # chroma cosine distance: similarity = 1 - distance
+        # Chroma cosine distance → similarity = 1 - distance.
         hits.append(Hit(id=i, text=doc, score=1.0 - float(dist), metadata=meta or {}))
     return hits
 
 
 def _bm25(query: str, store: dict, *, k: int) -> list[Hit]:
+    """Keyword (sparse) ranking with BM25; not Chroma's vector search."""
     docs = store.get("documents") or []
     ids = store.get("ids") or []
     metas = store.get("metadatas") or []
@@ -189,6 +211,7 @@ def _bm25(query: str, store: dict, *, k: int) -> list[Hit]:
 
 
 def _rrf(a: list[Hit], b: list[Hit], *, top_k: int, k: int = 60) -> list[Hit]:
+    """Reciprocal Rank Fusion: merge two ranked lists without mixing raw scores."""
     scores: dict[str, float] = {}
     payload: dict[str, Hit] = {}
     for rank, hit in enumerate(a):
@@ -206,12 +229,14 @@ def _rrf(a: list[Hit], b: list[Hit], *, top_k: int, k: int = 60) -> list[Hit]:
 
 
 def _is_praevention(hit: Hit) -> bool:
+    """True if chunk comes from the Prävention guideline (015-027)."""
     meta = hit.metadata or {}
     blob = f"{meta.get('doc_id', '')} {meta.get('source', '')} {hit.id}".lower()
     return any(h in blob for h in _PRAEVENTION_HINTS)
 
 
 def _prefer_praevention(query: str) -> bool:
+    """Screening-style questions should prefer Prävention over Diagnostik."""
     lower = (query or "").lower()
     if any(m in lower for m in _TRAP_MARKERS):
         return False
@@ -219,7 +244,7 @@ def _prefer_praevention(query: str) -> bool:
 
 
 def _phrase_bonus(expanded_query: str, text: str) -> float:
-    """Small lexical bump when chunk text matches intent phrases already in the query."""
+    """Small score bump when chunk text matches intent words already in the query."""
     q = expanded_query.lower()
     t = (text or "").lower()
     bonus = 0.0
@@ -236,13 +261,13 @@ def _phrase_bonus(expanded_query: str, text: str) -> float:
 
 
 def _lexical_boost(original: str, expanded: str, hits: list[Hit]) -> list[Hit]:
-    """Light post-RRF boost: Prävention preference + intent phrase overlap (keeps all hits)."""
+    """After RRF: lightly boost Prävention chunks + phrase overlap (keeps all hits)."""
     prefer = _prefer_praevention(original) or _prefer_praevention(expanded)
     scored: list[tuple[float, Hit]] = []
     for h in hits:
         score = float(h.score)
         if prefer and _is_praevention(h):
-            score += 0.02
+            score += 0.02  # small nudge toward 015-027 for screening Qs
         score += _phrase_bonus(expanded, h.text or "")
         scored.append((score, h))
     scored.sort(key=lambda x: x[0], reverse=True)
@@ -262,7 +287,7 @@ def _get_cross_encoder():
 
 
 def _cross_encoder_rerank(query: str, hits: list[Hit], *, top_k: int) -> list[Hit]:
-    """Score (query, passage) pairs with a multilingual cross-encoder; return top_k."""
+    """Re-score (query, passage) pairs; return the best top_k."""
     if not hits:
         return []
     model = _get_cross_encoder()

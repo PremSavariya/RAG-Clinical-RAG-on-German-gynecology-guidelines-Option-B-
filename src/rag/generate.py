@@ -1,3 +1,4 @@
+"""RAG answer step: retrieve chunks → prompt the LLM → optional citations."""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -17,6 +18,7 @@ class Answer:
 
 
 def _format_citations(hits: list[Hit]) -> str:
+    """Build a Quellen block from the top retrieved chunks (not from the LLM)."""
     lines = []
     for h in hits[:3]:
         src = h.metadata.get("source", "?")
@@ -32,6 +34,7 @@ def answer_question(
     temperature: float | None = None,
     model: str | None = None,
 ) -> Answer:
+    """Retrieve context, generate a German answer, append citations unless refused."""
     hits = retrieve(question, top_k=top_k)
     contexts = [
         {
@@ -54,6 +57,7 @@ def answer_question(
         max_tokens=CFG["generation"]["max_tokens"],
         model=model,
     )
+    # Refusal = out-of-scope / not in context; do not attach Quellen then.
     refused = is_refusal(text)
     if text and not refused and hits:
         text = text.rstrip() + "\n\n" + _format_citations(hits)

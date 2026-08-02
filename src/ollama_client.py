@@ -1,3 +1,8 @@
+"""Thin OpenAI-compatible client pointed at local Ollama.
+
+embed_texts → dense retrieval / indexing / semantic similarity
+chat        → answer generation and LLM-as-judge
+"""
 from __future__ import annotations
 
 from openai import OpenAI
@@ -12,10 +17,12 @@ from src.config import (
 
 
 def get_client() -> OpenAI:
+    """Ollama speaks the OpenAI HTTP API at OLLAMA_BASE_URL."""
     return OpenAI(base_url=OLLAMA_BASE_URL, api_key=OLLAMA_API_KEY)
 
 
 def embed_texts(texts: list[str], *, for_query: bool = False) -> list[list[float]]:
+    """Embed strings with EMBEDDINGS_MODEL_NAME (one call per text for reliability)."""
     if not texts:
         return []
     prepared = [_prefix(t, for_query=for_query) for t in texts]
@@ -35,6 +42,7 @@ def chat(
     max_tokens: int = 512,
     model: str | None = None,
 ) -> str:
+    """Chat completion; model defaults to LLM_MODEL_NAME from .env."""
     client = get_client()
     resp = client.chat.completions.create(
         model=model or LLM_MODEL_NAME,
@@ -46,6 +54,7 @@ def chat(
 
 
 def _prefix(text: str, *, for_query: bool) -> str:
+    # Only E5 family needs asymmetric prefixes; bge-m3 does not.
     if not is_e5_model():
         return text
     return f"query: {text}" if for_query else f"passage: {text}"

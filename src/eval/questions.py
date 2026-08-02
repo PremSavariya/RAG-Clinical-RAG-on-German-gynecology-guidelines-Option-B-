@@ -1,7 +1,13 @@
+"""Answer-quality / refusal eval bank (Q1–9 answerable, Q10–12 traps).
+
+Flags (eval only — never passed into retrieve/generate):
+  answerable / trap — traps must refuse; answerable Qs should answer from context
+  gold — core screening questions used in gold averages
+  expected_evidence — reference text for judge / semantic similarity
+  evidence_keywords — groups; a chunk matches if EVERY group has ≥1 term in the text
+"""
 from __future__ import annotations
 
-# Evidence labels are for eval only — not leaked into retrieval.
-# evidence_keywords: list of groups; a chunk matches if EVERY group has ≥1 term in the text.
 QUESTIONS: list[dict] = [
     {
         "id": 1,
@@ -165,6 +171,7 @@ QUESTIONS: list[dict] = [
             ["screening", "frueherkenn", "früherkenn", "ersetzt nicht"],
         ],
     },
+    # --- Traps: out of guideline scope; correct behavior is refusal ---
     {
         "id": 10,
         "answerable": False,

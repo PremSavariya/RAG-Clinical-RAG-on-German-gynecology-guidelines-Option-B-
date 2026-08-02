@@ -1,3 +1,6 @@
+"""Prompts for grounded German answers and clear refusals when context is missing."""
+
+# Exact phrase the model must use when the answer is not in the retrieved chunks.
 REFUSAL_PHRASE = (
     "Ich konnte in den bereitgestellten Textpassagen keine Antwort auf diese Frage finden."
 )
@@ -16,6 +19,7 @@ Regeln:
 
 
 def build_user_prompt(question: str, contexts: list[dict]) -> str:
+    """Pack retrieved chunks + question; remind the model to refuse if unsupported."""
     blocks = []
     for c in contexts:
         page = c.get("page", "?")
@@ -23,8 +27,17 @@ def build_user_prompt(question: str, contexts: list[dict]) -> str:
             f"[{c['id']}] (source={c.get('source')}, Seite={page}, typ={c.get('type')})\n{c['text']}"
         )
     ctx = "\n\n".join(blocks) if blocks else "(kein Kontext)"
-    return f"Kontext:\n{ctx}\n\nFrage: {question}\n\nAntwort:"
+
+    # Extra refusal reminder helps small models on trap / out-of-scope questions.
+    reminder = (
+        "Abschlussregel: Nutze ausschließlich den Kontext oben. "
+        "Steht die konkrete Antwort dort nicht, antworte NUR exakt: "
+        f"\"{REFUSAL_PHRASE}\" "
+        "Kein Vorwissen, keine vermuteten Therapien, keine Ergänzungen."
+    )
+    return f"Kontext:\n{ctx}\n\nFrage: {question}\n\n{reminder}\n\nAntwort:"
 
 
 def is_refusal(text: str) -> bool:
+    """True if the model output contains the fixed refusal sentence."""
     return REFUSAL_PHRASE.lower() in text.lower()

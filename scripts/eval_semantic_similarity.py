@@ -1,4 +1,8 @@
-"""Semantic similarity: expected_evidence vs answer from answers.jsonl (or eval JSON)."""
+"""Semantic similarity: embed expected_evidence vs answer, then cosine score.
+
+Unlike LLM-as-judge (subjective 1–10), this is a local embedding distance —
+no second LLM call. Reads a prior answers JSONL; does not re-run RAG.
+"""
 from __future__ import annotations
 
 import argparse
@@ -15,10 +19,11 @@ from src.config import EMBEDDINGS_MODEL_NAME
 from src.eval.load_answer_rows import load_answer_rows
 from src.ollama_client import embed_texts
 
-DEFAULT_REPORT = ROOT / "reports" / "answers.jsonl"
+DEFAULT_REPORT = ROOT / "reports" / "answers_finals.jsonl"
 
 
 def cosine(a: list[float], b: list[float]) -> float:
+    """Cosine similarity in [−1, 1]; NaN if vectors are empty or mismatched."""
     if not a or not b or len(a) != len(b):
         return float("nan")
     dot = sum(x * y for x, y in zip(a, b))
@@ -55,6 +60,7 @@ def main() -> None:
     for row in rows:
         qid = row.get("id")
         question = row.get("question") or ""
+        # Traps belong in refusal eval, not answer-quality similarity.
         if row.get("trap") or not row.get("answerable", True):
             skipped.append({"id": qid, "reason": "trap_or_unanswerable", "question": question})
             continue
@@ -68,6 +74,7 @@ def main() -> None:
             skipped.append({"id": qid, "reason": "no_answer", "question": question})
             continue
 
+        # Same embedding model as indexing; for_query=False = passage style.
         vecs = embed_texts([expected, generated], for_query=False)
         score = cosine(vecs[0], vecs[1])
 
@@ -105,7 +112,7 @@ def main() -> None:
         "skipped": skipped,
     }
 
-    out = ROOT / "reports" / "eval_semantic_similarity1.json"
+    out = ROOT / "reports" / "eval_semantic_similarity_finals.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(out_report, ensure_ascii=False, indent=2), encoding="utf-8")
 

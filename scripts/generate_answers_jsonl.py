@@ -1,4 +1,8 @@
-"""Generate reports/answers.jsonl for LLM-judge and semantic similarity."""
+"""Run RAG on answerable questions and save answers for judge / semantic similarity.
+
+Uses answer_question() → same retrieval settings as configs/default.yaml
+(hybrid, rerank, top_k, candidate_k). Skips trap questions.
+"""
 from __future__ import annotations
 
 import json
@@ -14,7 +18,8 @@ from src.rag.generate import answer_question
 
 
 def main() -> None:
-    out = ROOT / "reports" / "answers.jsonl"
+    # One JSON object per line: id, question, answer, expected_evidence.
+    out = ROOT / "reports" / "answers_reranker_candidate_50.jsonl"
     out.parent.mkdir(parents=True, exist_ok=True)
     n = 0
     with out.open("w", encoding="utf-8") as f:

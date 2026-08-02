@@ -1,3 +1,8 @@
+"""Step 2 of ingest: elements → retrieval-sized chunks.
+
+Chunk ids become `{element_id}_cN` (used as gold ids in chunk-id eval).
+Small tables stay whole so table structure is not split across chunks.
+"""
 from __future__ import annotations
 
 from src.config import CFG
@@ -32,6 +37,7 @@ def _as_chunk(rec: dict, text: str, part: int) -> dict:
 
 
 def _split(text: str, max_chars: int, overlap: int) -> list[str]:
+    """Sliding windows with overlap so recommendations aren't cut mid-sentence as often."""
     parts: list[str] = []
     start = 0
     while start < len(text):

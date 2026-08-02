@@ -1,0 +1,530 @@
+{
+  "n": 12,
+  "metric": "chunk_id_retrieval",
+  "definition": "Hit@k / Recall@k use relevant_chunk_ids (exact Chroma ids). Hit@k = 1 if any gold id in top-k else 0. Recall@k = |gold ∩ top-k| / |gold|. Averages exclude questions without relevant_chunk_ids.",
+  "retrieval_gold": {
+    "n": 3,
+    "hit@3": 0.6666666666666666,
+    "recall@3": 0.5,
+    "hit@5": 0.6666666666666666,
+    "recall@5": 0.6666666666666666,
+    "note": "Averaged over gold questions with non-empty relevant_chunk_ids (Q1–3)."
+  },
+  "retrieval_labeled": {
+    "n": 3,
+    "hit@3": 0.6666666666666666,
+    "recall@3": 0.5,
+    "hit@5": 0.6666666666666666,
+    "recall@5": 0.6666666666666666,
+    "note": "Averaged over answerable questions with non-empty relevant_chunk_ids."
+  },
+  "rows": [
+    {
+      "id": 1,
+      "answerable": true,
+      "gold": true,
+      "trap": false,
+      "question": "Welche Untersuchung und in welchem Intervall wird für Frauen im Alter von 20 bis 34 Jahren im organisierten Screening empfohlen?",
+      "hit_ids": [
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_930_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1017_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1384_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1018_c0",
+        "032-033OLl_S3_Diagnostik_Therapie_Nachsorge_Zervixkarzinom_2022-03_670_c0"
+      ],
+      "hit_pages": [
+        73,
+        82,
+        112,
+        82,
+        51
+      ],
+      "hit_scores": [
+        0.0665,
+        0.0665,
+        0.0656,
+        0.0649,
+        0.0628
+      ],
+      "relevant_chunk_ids": [
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_930_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1017_c0"
+      ],
+      "found_ids": [
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_930_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1017_c0"
+      ],
+      "expected_evidence": "Altersband 20–34, zytologiebasiert jährlich",
+      "gold_pages": [
+        73,
+        82
+      ],
+      "hit@3": 1.0,
+      "recall@3": 1.0,
+      "found_ids@3": [
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_930_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1017_c0"
+      ],
+      "hit@5": 1.0,
+      "recall@5": 1.0,
+      "found_ids@5": [
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_930_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1017_c0"
+      ]
+    },
+    {
+      "id": 2,
+      "answerable": true,
+      "gold": true,
+      "trap": false,
+      "question": "Welches Testverfahren und welches Intervall gelten für Frauen ab 35 Jahren?",
+      "hit_ids": [
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1018_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1386_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1536_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_930_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1017_c0"
+      ],
+      "hit_pages": [
+        82,
+        112,
+        125,
+        73,
+        82
+      ],
+      "hit_scores": [
+        0.0678,
+        0.0619,
+        0.0613,
+        0.0613,
+        0.0601
+      ],
+      "relevant_chunk_ids": [
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_930_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1018_c0"
+      ],
+      "found_ids": [
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1018_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_930_c0"
+      ],
+      "expected_evidence": "Ko-Testung HPV + Zytologie, 3-Jahres-Intervall",
+      "gold_pages": [
+        73,
+        82
+      ],
+      "hit@3": 1.0,
+      "recall@3": 0.5,
+      "found_ids@3": [
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1018_c0"
+      ],
+      "hit@5": 1.0,
+      "recall@5": 1.0,
+      "found_ids@5": [
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1018_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_930_c0"
+      ]
+    },
+    {
+      "id": 3,
+      "answerable": true,
+      "gold": true,
+      "trap": false,
+      "question": "Wie ist das empfohlene Vorgehen bei einer Frau ab 35, die HPV-positiv, aber zytologisch unauffällig ist?",
+      "hit_ids": [
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1212_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1209_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1205_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1219_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1250_c0"
+      ],
+      "hit_pages": [
+        99,
+        99,
+        98,
+        100,
+        103
+      ],
+      "hit_scores": [
+        0.0765,
+        0.0752,
+        0.0722,
+        0.0713,
+        0.0704
+      ],
+      "relevant_chunk_ids": [
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1040_c0"
+      ],
+      "found_ids": [],
+      "expected_evidence": "Wiederholung Ko-Testung nach ~12 Monaten",
+      "gold_pages": [
+        84
+      ],
+      "hit@3": 0.0,
+      "recall@3": 0.0,
+      "found_ids@3": [],
+      "hit@5": 0.0,
+      "recall@5": 0.0,
+      "found_ids@5": []
+    },
+    {
+      "id": 4,
+      "answerable": true,
+      "gold": false,
+      "trap": false,
+      "question": "Ab welchem Alter beginnt das organisierte Zervixkarzinom-Screening in Deutschland? ",
+      "hit_ids": [
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_970_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1380_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1522_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_930_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_2373_c0"
+      ],
+      "hit_pages": [
+        76,
+        112,
+        123,
+        73,
+        186
+      ],
+      "hit_scores": [
+        0.0364,
+        0.0361,
+        0.0359,
+        0.0356,
+        0.0354
+      ],
+      "relevant_chunk_ids": [],
+      "found_ids": [],
+      "expected_evidence": "Ab 25 Jahren beginnt das organisierte Zervixkarzinomscreening in Deutschland.",
+      "gold_pages": [
+        76
+      ],
+      "hit@3": NaN,
+      "recall@3": NaN,
+      "found_ids@3": [],
+      "hit@5": NaN,
+      "recall@5": NaN,
+      "found_ids@5": []
+    },
+    {
+      "id": 5,
+      "answerable": true,
+      "gold": false,
+      "trap": false,
+      "question": "Welche Rolle spielt die HPV-Selbstabnahme (Selbstentnahme) laut Leitlinie, und für welche Gruppe?",
+      "hit_ids": [
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1589_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1586_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1585_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1594_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1601_c0"
+      ],
+      "hit_pages": [
+        129,
+        129,
+        129,
+        130,
+        131
+      ],
+      "hit_scores": [
+        0.0505,
+        0.0462,
+        0.0451,
+        0.0447,
+        0.0444
+      ],
+      "relevant_chunk_ids": [],
+      "found_ids": [],
+      "expected_evidence": "Laut Leitlinie dient die HPV-Selbstabnahme dazu, die Teilnahme am Zervixkarzinom-Screening bei Frauen zu erhöhen, die trotz Einladung nicht an der regulären Früherkennung teilnehmen. Diesen sogenannten Non-Respondern sollte eine Selbstentnahme angeboten werden.",
+      "gold_pages": [
+        129,
+        130,
+        127
+      ],
+      "hit@3": NaN,
+      "recall@3": NaN,
+      "found_ids@3": [],
+      "hit@5": NaN,
+      "recall@5": NaN,
+      "found_ids@5": []
+    },
+    {
+      "id": 6,
+      "answerable": true,
+      "gold": false,
+      "trap": false,
+      "question": "Welche HPV-Typen sind für die Mehrzahl der Zervixkarzinome verantwortlich?",
+      "hit_ids": [
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_403_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_521_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_554_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_521_c2",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_406_c2"
+      ],
+      "hit_pages": [
+        28,
+        38,
+        41,
+        38,
+        28
+      ],
+      "hit_scores": [
+        0.0525,
+        0.0505,
+        0.049,
+        0.0462,
+        0.045
+      ],
+      "relevant_chunk_ids": [],
+      "found_ids": [],
+      "expected_evidence": "Die HPV-Typen 16 und 18 sind für 60 bis 70% aller Zervixkarzinome verantwortlich.",
+      "gold_pages": [
+        38
+      ],
+      "hit@3": NaN,
+      "recall@3": NaN,
+      "found_ids@3": [],
+      "hit@5": NaN,
+      "recall@5": NaN,
+      "found_ids@5": []
+    },
+    {
+      "id": 7,
+      "answerable": true,
+      "gold": false,
+      "trap": false,
+      "question": "Was ist der Unterschied zwischen einer zytologiebasierten und einer HPV-basierten Screening-Strategie?",
+      "hit_ids": [
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_2317_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_267_c2",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_800_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_797_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1416_c0"
+      ],
+      "hit_pages": [
+        182,
+        19,
+        62,
+        62,
+        115
+      ],
+      "hit_scores": [
+        0.0478,
+        0.0461,
+        0.0364,
+        0.0361,
+        0.0361
+      ],
+      "relevant_chunk_ids": [],
+      "found_ids": [],
+      "expected_evidence": "Zytologie: Pap-Abstrich; HPV: molekularbiologischer Test. HPV höhere Sensitivität, niedrigere Spezifität.",
+      "gold_pages": [
+        59,
+        50
+      ],
+      "hit@3": NaN,
+      "recall@3": NaN,
+      "found_ids@3": [],
+      "hit@5": NaN,
+      "recall@5": NaN,
+      "found_ids@5": []
+    },
+    {
+      "id": 8,
+      "answerable": true,
+      "gold": false,
+      "trap": false,
+      "question": "Welche Empfehlung gibt die Leitlinie zur Kolposkopie bei auffälligem Befund?",
+      "hit_ids": [
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1278_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1856_c0",
+        "032-033OLl_S3_Diagnostik_Therapie_Nachsorge_Zervixkarzinom_2022-03_2100_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1199_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1333_c0"
+      ],
+      "hit_pages": [
+        105,
+        154,
+        192,
+        98,
+        108
+      ],
+      "hit_scores": [
+        0.0295,
+        0.0292,
+        0.0267,
+        0.0243,
+        0.0243
+      ],
+      "relevant_chunk_ids": [],
+      "found_ids": [],
+      "expected_evidence": "Abklärungskolposkopie bei ausgewählten auffälligen Screeningbefunden.",
+      "gold_pages": [
+        100,
+        101,
+        105
+      ],
+      "hit@3": NaN,
+      "recall@3": NaN,
+      "found_ids@3": [],
+      "hit@5": NaN,
+      "recall@5": NaN,
+      "found_ids@5": []
+    },
+    {
+      "id": 9,
+      "answerable": true,
+      "gold": false,
+      "trap": false,
+      "question": "Welche Bedeutung hat die HPV-Impfung im Kontext der Prävention laut Leitlinie?",
+      "hit_ids": [
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_284_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1048_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1046_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_2307_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_304_c0"
+      ],
+      "hit_pages": [
+        20,
+        85,
+        85,
+        181,
+        21
+      ],
+      "hit_scores": [
+        0.052,
+        0.0492,
+        0.0476,
+        0.0415,
+        0.0359
+      ],
+      "relevant_chunk_ids": [],
+      "found_ids": [],
+      "expected_evidence": "HPV-Impfung ist Primärprävention; ersetzt Screening nicht.",
+      "gold_pages": [
+        42,
+        43
+      ],
+      "hit@3": NaN,
+      "recall@3": NaN,
+      "found_ids@3": [],
+      "hit@5": NaN,
+      "recall@5": NaN,
+      "found_ids@5": []
+    },
+    {
+      "id": 10,
+      "answerable": false,
+      "gold": false,
+      "trap": true,
+      "question": "Welche Thrombolyse-Therapie und welches Zeitfenster gelten beim akuten ischämischen Schlaganfall?",
+      "hit_ids": [
+        "032-033OLl_S3_Diagnostik_Therapie_Nachsorge_Zervixkarzinom_2022-03_1579_c2",
+        "032-033OLl_S3_Diagnostik_Therapie_Nachsorge_Zervixkarzinom_2022-03_1281_c0",
+        "032-033OLl_S3_Diagnostik_Therapie_Nachsorge_Zervixkarzinom_2022-03_2226_c1",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_760_c1",
+        "032-033OLl_S3_Diagnostik_Therapie_Nachsorge_Zervixkarzinom_2022-03_1448_c0"
+      ],
+      "hit_pages": [
+        144,
+        115,
+        204,
+        58,
+        132
+      ],
+      "hit_scores": [
+        0.0164,
+        0.0164,
+        0.0161,
+        0.0161,
+        0.0159
+      ],
+      "relevant_chunk_ids": [],
+      "found_ids": [],
+      "expected_evidence": "Ich konnte in den bereitgestellten Textpassagen keine Antwort auf diese Frage finden.",
+      "gold_pages": [],
+      "hit@3": NaN,
+      "recall@3": NaN,
+      "found_ids@3": [],
+      "hit@5": NaN,
+      "recall@5": NaN,
+      "found_ids@5": []
+    },
+    {
+      "id": 11,
+      "answerable": false,
+      "gold": false,
+      "trap": true,
+      "question": "Welches Antibiotikum ist first-line bei einer ambulant erworbenen Pneumonie?",
+      "hit_ids": [
+        "032-033OLl_S3_Diagnostik_Therapie_Nachsorge_Zervixkarzinom_2022-03_193_c0",
+        "032-033OLl_S3_Diagnostik_Therapie_Nachsorge_Zervixkarzinom_2022-03_1232_c0",
+        "032-033OLl_S3_Diagnostik_Therapie_Nachsorge_Zervixkarzinom_2022-03_2729_c0",
+        "032-033OLl_S3_Diagnostik_Therapie_Nachsorge_Zervixkarzinom_2022-03_1611_c0",
+        "032-033OLl_S3_Diagnostik_Therapie_Nachsorge_Zervixkarzinom_2022-03_788_c0"
+      ],
+      "hit_pages": [
+        15,
+        110,
+        254,
+        148,
+        63
+      ],
+      "hit_scores": [
+        0.0309,
+        0.0164,
+        0.0161,
+        0.0161,
+        0.0159
+      ],
+      "relevant_chunk_ids": [],
+      "found_ids": [],
+      "expected_evidence": "Ich konnte in den bereitgestellten Textpassagen keine Antwort auf diese Frage finden.",
+      "gold_pages": [],
+      "hit@3": NaN,
+      "recall@3": NaN,
+      "found_ids@3": [],
+      "hit@5": NaN,
+      "recall@5": NaN,
+      "found_ids@5": []
+    },
+    {
+      "id": 12,
+      "answerable": false,
+      "gold": false,
+      "trap": true,
+      "question": "Welche medikamentöse Erstlinientherapie wird bei arterieller Hypertonie empfohlen?",
+      "hit_ids": [
+        "032-033OLl_S3_Diagnostik_Therapie_Nachsorge_Zervixkarzinom_2022-03_2351_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1193_c0",
+        "032-033OLl_S3_Diagnostik_Therapie_Nachsorge_Zervixkarzinom_2022-03_1651_c0",
+        "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1199_c0",
+        "032-033OLl_S3_Diagnostik_Therapie_Nachsorge_Zervixkarzinom_2022-03_2528_c0"
+      ],
+      "hit_pages": [
+        217,
+        97,
+        152,
+        98,
+        236
+      ],
+      "hit_scores": [
+        0.0164,
+        0.0164,
+        0.0161,
+        0.0161,
+        0.0159
+      ],
+      "relevant_chunk_ids": [],
+      "found_ids": [],
+      "expected_evidence": "Ich konnte in den bereitgestellten Textpassagen keine Antwort auf diese Frage finden.",
+      "gold_pages": [],
+      "hit@3": NaN,
+      "recall@3": NaN,
+      "found_ids@3": [],
+      "hit@5": NaN,
+      "recall@5": NaN,
+      "found_ids@5": []
+    }
+  ]
+}

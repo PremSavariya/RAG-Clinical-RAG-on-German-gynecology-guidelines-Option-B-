@@ -1,8 +1,11 @@
+"""Retrieval eval bank: Hit@k / Recall@k vs gold Chroma chunk ids.
+
+Same questions as questions.py, plus relevant_chunk_ids for labeled golds
+(Q1–3). Labels are eval-only and never leaked into retrieve().
+relevant_chunk_ids use Chroma ids `{element_id}_cN` from ingest chunking.
+"""
 from __future__ import annotations
 
-# Chunk-id labels for retrieval eval (not leaked into retrieval).
-# relevant_chunk_ids: Chroma / hit ids (element_id + "_cN").
-# evidence_keywords: same passage groups as questions.py (for precision@k).
 DOC = "015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert"
 
 QUESTIONS_CHUNK_IDS: list[dict] = [
@@ -180,6 +183,7 @@ QUESTIONS_CHUNK_IDS: list[dict] = [
             ["screening", "frueherkenn", "früherkenn", "ersetzt nicht"],
         ],
     },
+    # --- Traps: no gold chunks; used for parity with questions.py, not Hit/Recall ---
     {
         "id": 10,
         "answerable": False,

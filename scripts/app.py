@@ -125,6 +125,7 @@ async def ask(
         )
 
     try:
+        # Same RAG path as scripts/ask.py; form can override model / top_k / temp.
         result = answer_question(q, top_k=k, temperature=temp, model=model)
         return templates.TemplateResponse(
             request,
@@ -133,6 +134,7 @@ async def ask(
                 question=q,
                 answer=result.answer,
                 refused=result.refused,
+                # Hide chunk list on refusal — nothing useful to cite.
                 hits=[] if result.refused else [_hit_view(h) for h in result.hits],
                 llm_model=model,
                 top_k=k,

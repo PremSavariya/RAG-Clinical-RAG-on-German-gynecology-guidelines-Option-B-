@@ -1,0 +1,75 @@
+{
+  "metric": "llm_judge_correctness",
+  "definition": "LLM scores answer vs expected_evidence only (1-10). No labels/rationale.",
+  "source_report": "D:\\Nixi.AI_Final_File\\nixi.ai_final\\reports\\answers_without_reranker_1.5b.jsonl",
+  "judge_model": "qwen2.5:1.5b",
+  "n_scored": 9,
+  "n_skipped": 0,
+  "mean_correctness": 7.666666666666667,
+  "per_question": [
+    {
+      "id": 1,
+      "question": "Welche Untersuchung und in welchem Intervall wird für Frauen im Alter von 20 bis 34 Jahren im organisierten Screening empfohlen?",
+      "correctness": 1,
+      "answer": "Für Frauen im Alter von 20 bis 34 Jahren wird das zytologiebasierte Zervixkarzinomscreening gemäß § 6 Absatz 3 in Anspruch genommen. Das Screening erfolgt jährlich und hat eine Intervall von mindestens drei Jahren.\n\nQuellen:\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_930_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 73)\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1017_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 82)\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1384_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 112)",
+      "expected_evidence": "Altersband 20–34, zytologiebasiert jährlich"
+    },
+    {
+      "id": 2,
+      "question": "Welches Testverfahren und welches Intervall gelten für Frauen ab 35 Jahren?",
+      "correctness": 8,
+      "answer": "Für Frauen ab 35 Jahren gilt eine Kombinationsuntersuchung, bestehend aus einem HPV-Test und einer zytologischen Untersuchung. Der Screeningintervall beträgt mindestens 3 Jahre.\n\nQuellen:\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1018_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 82)\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1386_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 112)\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1536_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 125)",
+      "expected_evidence": "Ko-Testung HPV + Zytologie, 3-Jahres-Intervall"
+    },
+    {
+      "id": 3,
+      "question": "Wie ist das empfohlene Vorgehen bei einer Frau ab 35, die HPV-positiv, aber zytologisch unauffällig ist?",
+      "correctness": 8,
+      "answer": "Bei einer Frau ab 35 Jahren, die HPV positiv ist und zytologisch unauffällig ist, wird eine endometriumsspezifische Abklärung mit HR-HPV-Test oder p16/Ki-67-Screening Immunzytochemie innerhalb von 3 Monaten durchgeführt. Ist dieser Test positiv, sollte eine kolposkopische Abklärung innerhalb von 3 Monaten erfolgen. Bei negativem Nachweis sollten zytologische und HPV-Kontrolle nach 12 Monaten durchgeführt werden.\n\nQuellen:\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1212_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 99)\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1209_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 99)\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1205_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 98)",
+      "expected_evidence": "Wiederholung Ko-Testung nach ~12 Monaten"
+    },
+    {
+      "id": 4,
+      "question": "Ab welchem Alter beginnt das organisierte Zervixkarzinom-Screening in Deutschland? ",
+      "correctness": 8,
+      "answer": "Das organisierte Zervixkarzinomscreening kann bei Frauen ab 25 Jahren beginnen.\n\nQuellen:\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_970_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 76)\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1380_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 112)\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1522_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 123)",
+      "expected_evidence": "Ab 25 Jahren beginnt das organisierte Zervixkarzinomscreening in Deutschland."
+    },
+    {
+      "id": 5,
+      "question": "Welche Rolle spielt die HPV-Selbstabnahme (Selbstentnahme) laut Leitlinie, und für welche Gruppe?",
+      "correctness": 8,
+      "answer": "Die HPV-Selbstabnahme spielt eine wichtige Rolle in der Leitlinie. Sie ist besonders relevant für Frauen, die nicht an der regulären Früherkennung teilnehmen. Die Leitlinie empfiehlt es, dass HPV geimpfte Frauen weiterhin an den Krebsfrüherkennungsuntersuchungen teilnehmen sollten, da gegenwärtige Impfstoffe nicht alle onkogenen HPV-Infektionen verhindern können. Diese Empfehlung richtet sich hauptsächlich für die Gruppe der HPV geimpften Frauen.\n\nQuellen:\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1589_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 129)\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1586_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 129)\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1585_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 129)",
+      "expected_evidence": "Laut Leitlinie dient die HPV-Selbstabnahme dazu, die Teilnahme am Zervixkarzinom-Screening bei Frauen zu erhöhen, die trotz Einladung nicht an der regulären Früherkennung teilnehmen. Diesen sogenannten Non-Respondern sollte eine Selbstentnahme angeboten werden. Sie soll Frauen vorbehalten bleiben, die sich nicht an der regulären Krebsvorsorge beteiligen."
+    },
+    {
+      "id": 6,
+      "question": "Welche HPV-Typen sind für die Mehrzahl der Zervixkarzinome verantwortlich?",
+      "correctness": 10,
+      "answer": "Für die Mehrzahl der Zervixkarzinome sind HPV-Typen 16 und 18 verantwortlich.\n\nQuellen:\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_403_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 28)\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_521_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 38)\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_554_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 41)",
+      "expected_evidence": "Die HPV-Typen 16 und 18 sind für 60 bis 70% aller Zervixkarzinome verantwortlich."
+    },
+    {
+      "id": 7,
+      "question": "Was ist der Unterschied zwischen einer zytologiebasierten und einer HPV-basierten Screening-Strategie?",
+      "correctness": 9,
+      "answer": "Die zytologiebasierte Screeningstrategie basiert auf der Analyse von Zellen, während die HPV-basierte Strategie auf den Antigüten von Human Papillomavirus (HPV) abzielt. Die HPV-basierte Screening-Strategie hat ein erhöhtes Potenzial für Schaden im Vergleich zu zytologiebasierten Verfahren.\n\nQuellen:\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_2317_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 182)\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_267_c2] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 19)\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_800_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 62)",
+      "expected_evidence": "Bei einer zytologiebasierten Screening-Strategie werden Zellen vom Gebärmutterhals entnommen und mikroskopisch auf auffällige Zellveränderungen untersucht (Pap-Abstrich). Bei einer HPV-basierten Strategie wird die Probe mit einem molekularbiologischen Test auf Hochrisiko-HPV-Typen untersucht. Laut Leitlinie besitzt der HPV-Test für CIN2+-Läsionen eine höhere Sensitivität, aber eine niedrigere Spezifität als die Zytologie. HPV-Tests sind außerdem üblicherweise besser reproduzierbar."
+    },
+    {
+      "id": 8,
+      "question": "Welche Empfehlung gibt die Leitlinie zur Kolposkopie bei auffälligem Befund?",
+      "correctness": 8,
+      "answer": "Die Leitlinie empfiehlt, dass eine differenzierte Kolposkopie durchgeführt wird, wenn ein auffälliges Befund (mindestens 1 Testverfahren positiv) auftritt.\n\nQuellen:\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1278_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 105)\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1856_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 154)\n[032-033OLl_S3_Diagnostik_Therapie_Nachsorge_Zervixkarzinom_2022-03_2100_c0] (source=032-033OLl_S3_Diagnostik_Therapie_Nachsorge_Zervixkarzinom_2022-03.pdf, S. 192)",
+      "expected_evidence": "Die Leitlinie empfiehlt eine Abklärungskolposkopie bei ausgewählten auffälligen Screeningbefunden, insbesondere bei hochgradigen zytologischen Auffälligkeiten, einem positiven HPV-16/18-Nachweis oder einem geschätzten Risiko von mindestens 10 % für CIN 3+, AIS beziehungsweise ein Adenokarzinom."
+    },
+    {
+      "id": 9,
+      "question": "Welche Bedeutung hat die HPV-Impfung im Kontext der Prävention laut Leitlinie?",
+      "correctness": 9,
+      "answer": "Die HPV-Impfung ist ein wichtiger Bestandteil der primären Prävention des Zervixkarzinoms, wie in der S3-Leitlinie zur Diagnostik und Therapie des Zervixkarzinoms beschrieben. Sie fördert die Erhöhung der Teilnahmerate am Screening und reduziert die HPV-Prävalenz, was zu einer besseren Prävention führen würde. Die Leitlinie empfiehlt jedoch eine höhere Teilnahmerate als in der Basisfallanalyse untersuchte, wodurch das Screening nach HPV-Impfung erfolgen sollte.\n\nQuellen:\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_284_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 20)\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1048_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 85)\n[015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert_1046_c0] (source=015-027OLl_Praevention_Zervixkarzinom_2020-03-verlaengert.pdf, S. 85)",
+      "expected_evidence": "Laut Leitlinie ist die HPV-Impfung eine zentrale Maßnahme der Primärprävention. Sie verhindert Infektionen mit den durch den Impfstoff abgedeckten HPV-Typen und reduziert dadurch das Risiko für Krebsvorstufen und HPV-assoziierte Krebserkrankungen. Die Impfung ersetzt jedoch nicht die regelmäßige Teilnahme am Zervixkarzinom-Screening."
+    }
+  ],
+  "skipped": []
+}

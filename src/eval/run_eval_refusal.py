@@ -1,4 +1,8 @@
-"""Refusal eval for trap questions only."""
+"""Refusal eval for trap questions only (out-of-scope medical topics).
+
+Success = the model returns the fixed refusal phrase, not a guessed answer.
+Unlike Hit/Recall or answer quality, this measures "know when not to answer."
+"""
 from __future__ import annotations
 
 import json
@@ -9,6 +13,7 @@ from src.rag.generate import answer_question
 
 
 def run_eval_refusal(*, out_path: Path | None = None) -> dict:
+    """Run full RAG on traps only; score fraction that correctly refuse."""
     traps = [q for q in QUESTIONS if q.get("trap")]
     rows = []
     for q in traps:

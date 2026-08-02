@@ -1,4 +1,7 @@
-"""Ask one question against the indexed guidelines."""
+"""CLI: ask one German question against the indexed guidelines.
+
+Uses the same answer_question() path as the web UI (config-driven retrieve + generate).
+"""
 from __future__ import annotations
 
 import argparse
@@ -19,6 +22,7 @@ def main() -> None:
     q = args.question or input("Frage: ").strip()
     result = answer_question(q)
     print(result.answer)
+    # Show which chunks the answer was grounded on (useful for debugging retrieval).
     print("\n--- retrieved ---")
     for h in result.hits:
         page = h.metadata.get("page")

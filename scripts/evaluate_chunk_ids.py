@@ -1,4 +1,4 @@
-"""Chunk-id Hit@k / Recall@k + keyword Precision@k (like evaluate.py)."""
+"""CLI for chunk-id Hit@k / Recall@k (retrieval quality vs gold chunk ids)."""
 from __future__ import annotations
 
 import json
@@ -13,7 +13,8 @@ from src.eval.run_eval_chunk_ids import run_eval_chunk_ids
 
 
 def main() -> None:
-    out = ROOT / "reports" / "eval_recall_chunk_ids_4.json"
+    # Uses retrieve() with current configs/default.yaml (hybrid / rerank / k).
+    out = ROOT / "reports" / "eval_recall_chunk_ids_without_rerank.json"
     report = run_eval_chunk_ids(out_path=out)
 
     print("=== Chunk-id retrieval summary ===")
@@ -35,15 +36,9 @@ def main() -> None:
         print(f"  relevant_chunk_ids: {row['relevant_chunk_ids']}")
         print(f"  hit_ids: {row['hit_ids']}")
         print(f"  found_ids: {row['found_ids']}")
-        if row.get("relevant_chunk_ids") or row.get("evidence_keywords"):
-            print(
-                f"  hit@3={row.get('hit@3')} recall@3={row.get('recall@3')} "
-                f"precision@3={row.get('precision@3')}"
-            )
-            print(
-                f"  hit@5={row.get('hit@5')} recall@5={row.get('recall@5')} "
-                f"precision@5={row.get('precision@5')}"
-            )
+        if row.get("relevant_chunk_ids"):
+            print(f"  hit@3={row.get('hit@3')} recall@3={row.get('recall@3')}")
+            print(f"  hit@5={row.get('hit@5')} recall@5={row.get('recall@5')}")
 
 
 if __name__ == "__main__":

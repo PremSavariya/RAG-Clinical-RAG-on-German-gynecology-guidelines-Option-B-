@@ -1,4 +1,7 @@
-"""LLM-as-judge: match score 0–10 of answer vs expected_evidence from answers.jsonl."""
+"""LLM-as-judge: score how well each answer matches expected_evidence (1–10).
+
+Reads a prior answers JSONL (or eval JSON with rows). Does not re-run retrieval.
+"""
 from __future__ import annotations
 
 import argparse
@@ -12,18 +15,26 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from src.config import LLM_MODEL_NAME
-from src.eval.load_answer_rows import load_answer_rows
 from src.ollama_client import chat
 
-DEFAULT_REPORT = ROOT / "reports" / "answers.jsonl"
+DEFAULT_REPORT = ROOT / "reports" / "answers_finals.jsonl"
 
-JUDGE_SYSTEM = """Du bewertest, wie gut eine generierte Antwort mit der erwarteten Evidenz übereinstimmt.
-Kein externes Wissen. Paraphrasen und Synonyme (z. B. Ko-Testung ≈ HPV+Zytologie-Kombi) gelten als Treffer.
-Antworte NUR als JSON: {"correctness": 0-10}
-Skala: 10=gleiche Bedeutung, 0=keine Übereinstimmung."""
+JUDGE_SYSTEM = """Du bewertest RAG-Antworten zu deutschen Leitlinien.
+Vergleiche die Antwort NUR mit der erwarteten Evidenz (kein externes Wissen).
+Antworte NUR als JSON: {"correctness": 1-10}
+Skala: 10=vollständig korrekt, 5=teilweise, 1=falsch/fehlt."""
+
+
+def _load_rows(path: Path) -> list[dict]:
+    """Load answers.jsonl or an eval JSON that has a rows list."""
+    text = path.read_text(encoding="utf-8")
+    if path.suffix.lower() == ".jsonl":
+        return [json.loads(line) for line in text.splitlines() if line.strip()]
+    return list(json.loads(text).get("rows") or [])
 
 
 def _parse_json(text: str) -> dict:
+    """Parse judge JSON; tolerate extra text around the object."""
     text = (text or "").strip()
     try:
         return json.loads(text)
@@ -35,6 +46,7 @@ def _parse_json(text: str) -> dict:
 
 
 def judge(question: str, expected: str, answer: str, *, model: str) -> dict:
+    """Ask the judge LLM for a single correctness score in 1..10."""
     user = f"Frage:\n{question}\n\nErwartete Evidenz:\n{expected}\n\nAntwort:\n{answer}"
     raw = chat(
         [{"role": "system", "content": JUDGE_SYSTEM}, {"role": "user", "content": user}],
@@ -43,19 +55,19 @@ def judge(question: str, expected: str, answer: str, *, model: str) -> dict:
         model=model,
     )
     data = _parse_json(raw)
-    score = int(data.get("correctness", 0))
-    return {"correctness": max(0, min(10, score))}
+    score = int(data.get("correctness", 1))
+    return {"correctness": max(1, min(10, score))}
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="LLM-as-judge match score 0-10 vs expected_evidence")
+    parser = argparse.ArgumentParser(description="LLM-as-judge correctness 1-10 vs expected_evidence")
     parser.add_argument("--from-report", type=Path, default=DEFAULT_REPORT)
     parser.add_argument("--judge-model", default=LLM_MODEL_NAME)
     args = parser.parse_args()
     if not args.from_report.is_file():
         raise SystemExit(f"Report not found: {args.from_report}")
 
-    rows = load_answer_rows(args.from_report)
+    rows = _load_rows(args.from_report)
     print(f"Source: {args.from_report} | judge={args.judge_model} | n={len(rows)}")
 
     scored: list[dict] = []
@@ -85,7 +97,7 @@ def main() -> None:
     scores = [r["correctness"] for r in scored]
     out_report = {
         "metric": "llm_judge_correctness",
-        "definition": "LLM match score of answer vs expected_evidence only (0-10). No labels.",
+        "definition": "LLM scores answer vs expected_evidence only (1-10). No labels/rationale.",
         "source_report": str(args.from_report.resolve()),
         "judge_model": args.judge_model,
         "n_scored": len(scores),

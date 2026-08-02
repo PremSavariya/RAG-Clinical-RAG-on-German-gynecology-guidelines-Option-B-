@@ -1,4 +1,4 @@
-"""Chunk-id retrieval eval: Hit@k / Recall@k vs gold ids; keyword Precision@k."""
+"""Chunk-id retrieval eval: Hit@k / Recall@k vs gold Chroma ids (no Precision)."""
 from __future__ import annotations
 
 import json
@@ -8,35 +8,8 @@ from src.eval.questions_chunk_ids import QUESTIONS_CHUNK_IDS
 from src.rag.retrieve import Hit, retrieve
 
 
-def _normalize(text: str) -> str:
-    t = (text or "").lower()
-    return (
-        t.replace("ä", "ae")
-        .replace("ö", "oe")
-        .replace("ü", "ue")
-        .replace("ß", "ss")
-        .replace("–", "-")
-        .replace("—", "-")
-    )
-
-
-def _passage_matches(text: str, keyword_groups: list[list[str]]) -> bool:
-    """True if every group has at least one term appearing in the chunk text."""
-    if not keyword_groups:
-        return False
-    norm = _normalize(text)
-    for group in keyword_groups:
-        if not any(_normalize(term) in norm for term in group):
-            return False
-    return True
-
-
-def _is_relevant(hit: Hit, keyword_groups: list[list[str]]) -> bool:
-    return _passage_matches(hit.text or "", keyword_groups)
-
-
 def _hit_at_k(hit_ids: list[str], gold: list[str], k: int) -> float:
-    """1 if any gold id appears in top-k hits, else 0."""
+    """Hit@k = 1 if any gold chunk id appears in the top-k results, else 0."""
     if not gold:
         return float("nan")
     top = set(hit_ids[:k])
@@ -44,19 +17,11 @@ def _hit_at_k(hit_ids: list[str], gold: list[str], k: int) -> float:
 
 
 def _recall_at_k(hit_ids: list[str], gold: list[str], k: int) -> float:
-    """|gold ∩ top-k| / |gold|."""
+    """Recall@k = |gold ∩ top-k| / |gold| (how many gold ids we found)."""
     if not gold:
         return float("nan")
     top = set(hit_ids[:k])
     return len(top.intersection(gold)) / len(gold)
-
-
-def _precision_at_k(hits: list[Hit], keyword_groups: list[list[str]], k: int) -> float:
-    """Fraction of top-k chunks whose text matches evidence_keywords (like run_eval)."""
-    if k <= 0 or not keyword_groups:
-        return float("nan")
-    top = hits[:k]
-    return sum(1 for h in top if _is_relevant(h, keyword_groups)) / k
 
 
 def _avg(rows: list[dict], key: str) -> float:
@@ -65,11 +30,11 @@ def _avg(rows: list[dict], key: str) -> float:
 
 
 def _block(rows: list[dict], k_values: tuple[int, ...]) -> dict:
+    """Average Hit@k and Recall@k over a subset of questions."""
     block: dict = {"n": len(rows)}
     for k in k_values:
         block[f"hit@{k}"] = _avg(rows, f"hit@{k}")
         block[f"recall@{k}"] = _avg(rows, f"recall@{k}")
-        block[f"precision@{k}"] = _avg(rows, f"precision@{k}")
     return block
 
 
@@ -78,12 +43,13 @@ def run_eval_chunk_ids(
     k_values: tuple[int, ...] = (3, 5),
     out_path: Path | None = None,
 ) -> dict:
+    """Run retrieve() for each labeled question and score against relevant_chunk_ids."""
     rows: list[dict] = []
     for q in QUESTIONS_CHUNK_IDS:
+        # Same retrieve path as the app (hybrid / rerank from config).
         hits: list[Hit] = retrieve(q["question"], top_k=max(k_values))
         hit_ids = [h.id for h in hits]
         gold = list(q.get("relevant_chunk_ids") or [])
-        keyword_groups = [list(g) for g in (q.get("evidence_keywords") or [])]
         found = [i for i in hit_ids if i in gold]
 
         metrics: dict = {}
@@ -91,11 +57,7 @@ def run_eval_chunk_ids(
             top_found = [i for i in hit_ids[:k] if i in gold]
             metrics[f"hit@{k}"] = _hit_at_k(hit_ids, gold, k)
             metrics[f"recall@{k}"] = _recall_at_k(hit_ids, gold, k)
-            metrics[f"precision@{k}"] = _precision_at_k(hits, keyword_groups, k)
             metrics[f"found_ids@{k}"] = top_found
-            metrics[f"relevant_hit_ids@{k}"] = [
-                h.id for h in hits[:k] if _is_relevant(h, keyword_groups)
-            ]
 
         rows.append(
             {
@@ -108,7 +70,6 @@ def run_eval_chunk_ids(
                 "hit_pages": [h.metadata.get("page") for h in hits],
                 "hit_scores": [round(h.score, 4) for h in hits],
                 "relevant_chunk_ids": gold,
-                "evidence_keywords": keyword_groups,
                 "found_ids": found,
                 "expected_evidence": q.get("expected_evidence"),
                 "gold_pages": list(q.get("gold_pages") or []),
@@ -127,10 +88,7 @@ def run_eval_chunk_ids(
             "Hit@k / Recall@k use relevant_chunk_ids (exact Chroma ids). "
             "Hit@k = 1 if any gold id in top-k else 0. "
             "Recall@k = |gold ∩ top-k| / |gold|. "
-            "Precision@k matches evaluate.py: (# top-k hits whose text matches all "
-            "evidence_keywords groups) / k. "
-            "Hit/Recall averages exclude questions without relevant_chunk_ids; "
-            "Precision@k averages drop NaN (no keywords)."
+            "Averages exclude questions without relevant_chunk_ids."
         ),
         "retrieval_gold": {
             **_block(gold_rows, k_values),

@@ -1,4 +1,11 @@
-"""Build local vector index from PDFs in data/pdfs."""
+"""Build the local Chroma index: PDF → extract → chunk → embed → upsert.
+
+Pipeline (per PDF):
+  1) extract_pdf  → artifacts/.../elements.jsonl
+  2) index_elements → chunk + Ollama embeddings → Chroma collection "guidelines"
+
+Use --reset on the first PDF only to wipe the collection before a full rebuild.
+"""
 from __future__ import annotations
 
 import argparse
@@ -34,7 +41,7 @@ def main() -> None:
         n = index_elements(jsonl, reset=reset)
         print(f"  -> {n} chunks")
         total += n
-        reset = False  # only reset once
+        reset = False  # only wipe once; later PDFs append
     print(f"Done. Indexed {total} chunks from {len(pdfs)} PDF(s).")
 
 

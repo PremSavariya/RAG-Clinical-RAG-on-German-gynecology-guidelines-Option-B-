@@ -1,6 +1,6 @@
 retrieval:
   top_k: 10
-  candidate_k: 40
+  candidate_k: 50
   hybrid: true
   rerank: true
   rerank_model: BAAI/bge-reranker-v2-m3
