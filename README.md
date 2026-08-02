@@ -23,6 +23,19 @@ Install Python deps ([uv](https://docs.astral.sh/uv/), Python **3.12**):
 uv sync
 ```
 
+**Without uv** (Python **3.12**):
+
+```bash
+python -m venv .venv
+# Windows:
+.venv\Scripts\activate
+# macOS / Linux:
+source .venv/bin/activate
+pip install -e .
+```
+
+Then run the same later commands **without** the `uv run` prefix (e.g. `uvicorn scripts.app:app --host 127.0.0.1 --port 8000`).
+
 ### 2. Check the environment and update `.env`
 
 ```bash
