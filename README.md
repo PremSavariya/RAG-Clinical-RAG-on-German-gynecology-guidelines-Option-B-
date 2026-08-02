@@ -4,19 +4,7 @@ Local retrieval + generation over AWMF/DGGG guideline PDFs. Answers in German wi
 
 **Frozen eval numbers** are under [`reports/`](reports/).
 
-## Evaluation results
 
-| Metric | Value |
-|--------|-------|
-| Recall@3 (gold), no rerank | 0.50 |
-| Recall@3 (gold), with rerank | 0.83 |
-| Recall@5 (gold), no rerank | 0.67 |
-| Recall@5 (gold), with rerank | 0.83 |
-| Semantic similarity (mean) | ~0.78 |
-| LLM-as-judge (mean, 1–10) | ~7.7 |
-| Refusal rate (traps Q10–12) | 100% (3/3) |
-
-Numbers from [`reports/`](reports/): gold = Q1–3 for recall; semantic similarity and LLM-as-judge on answerable questions; refusal on trap Q10–12.
 
 ---
 
@@ -100,5 +88,19 @@ uv run uvicorn scripts.app:app --host 127.0.0.1 --port 8000
 Open **http://127.0.0.1:8000**
 
 You can ask the brief questions, inspect retrieved chunks, and check refusals on trap questions (stroke / pneumonia / hypertension).
+
+## Evaluation results
+
+| Metric | Value |
+|--------|-------|
+| Recall@3 (gold), no rerank | 0.50 |
+| Recall@3 (gold), with rerank | 0.83 |
+| Recall@5 (gold), no rerank | 0.67 |
+| Recall@5 (gold), with rerank | 0.83 |
+| Semantic similarity (mean) | ~0.78 |
+| LLM-as-judge (mean, 1–10) | ~7.7 |
+| Refusal rate (traps Q10–12) | 100% (3/3) |
+
+Numbers from [`reports/`](reports/): gold = Q1–3 for recall; semantic similarity and LLM-as-judge on answerable questions; refusal on trap Q10–12.
 
 > **Note:** A **prebuilt** Chroma index is included under `data/chroma/`. You do **not** need to run `build_index.py` or provide PDFs to use the UI. Keep `EMBEDDINGS_MODEL_NAME=bge-m3:latest` so queries match the index. The first retrieval may download the local reranker `BAAI/bge-reranker-v2-m3` from Hugging Face if rerank is enabled in config.
