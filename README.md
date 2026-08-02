@@ -15,8 +15,8 @@ This repo includes a ready-made vector index (`data/chroma/`). Clone → install
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/PremSavariya/RAG-Clinical-RAG-on-German-gynecology-guidelines-Option-B-.git
-cd RAG-Clinical-RAG-on-German-gynecology-guidelines-Option-B-
+git clone https://github.com/PremSavariya/Clinical-RAG-on-German-gynecology-guidelines.git
+cd Clinical-RAG-on-German-gynecology-guidelines
 ```
 
 Install Python deps ([uv](https://docs.astral.sh/uv/), Python **3.12**):
