@@ -8,11 +8,13 @@ Local retrieval + generation over AWMF/DGGG guideline PDFs. Answers in German wi
 
 ## Quick start (examiner)
 
+This repo includes a ready-made vector index (`data/chroma/`). Clone → install → pull Ollama models → start the UI. You do **not** need to run `build_index.py` for normal use.
+
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/PremSavariya/Clinical-RAG-on-German-gynecology-guidelines.git
-cd <to the cloned repository>
+git clone https://github.com/PremSavariya/RAG-Clinical-RAG-on-German-gynecology-guidelines-Option-B-.git
+cd RAG-Clinical-RAG-on-German-gynecology-guidelines-Option-B-
 ```
 
 Install Python deps ([uv](https://docs.astral.sh/uv/), Python **3.12**):
@@ -72,4 +74,4 @@ Open **http://127.0.0.1:8000**
 
 You can ask the brief questions, inspect retrieved chunks, and check refusals on trap questions (stroke / pneumonia / hypertension).
 
-> **Note:** The UI needs a Chroma index under `data/chroma/` and PDFs under `data/pdfs/`. The first retrieval may also download the local reranker `BAAI/bge-reranker-v2-m3` from Hugging Face.
+> **Note:** A **prebuilt** Chroma index is included under `data/chroma/`. You do **not** need to run `build_index.py` or provide PDFs to use the UI. Keep `EMBEDDINGS_MODEL_NAME=bge-m3:latest` so queries match the index. The first retrieval may download the local reranker `BAAI/bge-reranker-v2-m3` from Hugging Face if rerank is enabled in config.
