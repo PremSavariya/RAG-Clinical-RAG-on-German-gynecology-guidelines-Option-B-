@@ -94,12 +94,12 @@ You can ask the brief questions, inspect retrieved chunks, and check refusals on
 | Metric | Value |
 |--------|-------|
 | Recall@3 (gold), no rerank | 0.50 |
-| Recall@3 (gold), with rerank | 0.83 |
+| Recall@3 (gold), with rerank | **0.83** |
 | Recall@5 (gold), no rerank | 0.67 |
-| Recall@5 (gold), with rerank | 0.83 |
+| Recall@5 (gold), with rerank | **0.83** |
 | Semantic similarity (mean) | ~0.78 |
 | LLM-as-judge (mean, 1–10) | ~7.7 |
-| Refusal rate (traps Q10–12) | 100% (3/3) |
+| Refusal rate (traps Q10–12) | **100% (3/3)** |
 
 Numbers from [`reports/`](reports/): gold = Q1–3 for recall; semantic similarity and LLM-as-judge on answerable questions; refusal on trap Q10–12.
 
